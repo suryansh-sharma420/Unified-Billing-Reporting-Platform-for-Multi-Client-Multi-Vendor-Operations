@@ -2,49 +2,23 @@
 
 ## Project Overview
 
-**MoveInSync** is a comprehensive, enterprise-grade billing and reporting platform built with a focus on **multi-tenancy**, **scalability**, and **maintainability**. The system leverages object-oriented design patterns and PostgreSQL to provide a robust solution for managing complex billing scenarios across multiple contracts and tenant organizations.
+**MoveInSync** is a backend billing and reporting platform built for multi-tenant, vendor-client operations. The project is database-first and uses **PostgreSQL** for persistence and **Python (OOP)** for billing logic.
 
-### Key Characteristics
-- **Database-First Architecture**: Normalized PostgreSQL schema with audit trails
-- **Strategic Billing Logic**: Extensible strategy pattern for diverse billing models
-- **Multi-Tenant Support**: Isolated data and operations per tenant
-- **Production-Ready**: Comprehensive seed data and real-world scenarios
+### Key Features
+- Flexible billing logic implemented with the Strategy pattern
+- Multi-tenant-aware design (tenant and vendor scoping)
+- Audit-oriented data model (billing records and JSON logs)
+- Database-first schema with JSONB for extensible contract rules
 
 ---
 
-## Architecture Overview
+## Architecture
 
 ### System Architecture
-![Architecture Diagram](./Diagrams/Phase%201%20-%20DB/architecture-diagram.png)
+![Architecture Diagram](./Diagrams/Phase%201%20-%20DB/MoveInSync_DB_HLD(architecture).png)
 
 ### Entity Relationship Diagram (ERD)
-![ERD Diagram](./Diagrams/Phase%201%20-%20DB/erd-diagram.png)
-
----
-
-## Features
-
-✅ **Multi-Tenancy Support** - Isolated tenant environments with secure data separation  
-✅ **Strategy Pattern Implementation** - Flexible, extensible billing algorithms  
-✅ **Comprehensive Audit Logs** - Track all billing transactions and state changes  
-✅ **Contract Management** - Support for multiple contract types and renewal cycles  
-✅ **User Management** - Role-based access control and tenant assignments  
-✅ **Automated Seed Data** - Pre-populated test data for development  
-
----
-
-## Prerequisites
-
-Before running this project, ensure you have:
-
-- **Python**: Version 3.9 or higher
-  - Download from [python.org](https://www.python.org/downloads/)
-  
-- **PostgreSQL**: Version 12 or higher
-  - Download from [postgresql.org](https://www.postgresql.org/download/)
-  - Ensure PostgreSQL service is running
-  
-- **pip**: Python package manager (included with Python 3.9+)
+![ERD Diagram](./Diagrams/Phase%201%20-%20DB/MoveInSync_DB_DetailedERD(architecture).png)
 
 ---
 
@@ -53,48 +27,32 @@ Before running this project, ensure you have:
 ```
 MoveInSync_Project/
 ├── Phase 1 - Database/          # Database schema and seed data
-│   ├── 01_schema_design/        # Core database tables and indexes
-│   │   ├── 01_tables.sql       # User, Contract, Billing tables
-│   │   └── 02_indexes.sql      # Performance optimization indexes
-│   └── 02_seed_data/            # Test data scripts
-│       ├── 01_seed_users.sql   # Sample user accounts
-│       ├── 02_seed_contracts.sql # Sample contracts
-│       └── 03_renewal.sql       # Contract renewal logic
+│   ├── MoveInSync_DB/
+│   │   ├── 01_schema_design/
+│   │   │   ├── 01_tables.sql
+│   │   │   └── 02_indexes.sql
+│   │   └── 02_seed_data/
+│   │       ├── 01_seed_users.sql
+│   │       ├── 02_seed_contracts.sql
+│   │       └── 03_renewal.sql
 │
-├── Phase 2 - Core Logic OOP/    # Python application logic
+├── Phase 2 - core logic OOP/    # Python application logic
 │   ├── main.py                  # Application entry point
 │   ├── diagnosis.py             # Diagnostic utilities
-│   ├── repository.py            # Data access layer
-│   ├── schemas.py               # Data models and validation
 │   └── billing/                 # Billing engine module
 │       ├── __init__.py
-│       ├── strategies.py        # Strategy pattern implementations
-│       └── repository.py        # Billing-specific queries
+│       ├── repository.py        # Data access (uses python-dotenv for config)
+│       ├── schemas.py           # Dataclasses used by the billing engine
+│       └── strategies.py        # Strategy pattern implementations
 │
-├── Diagrams/                    # Architecture and design documentation
-│   └── Phase 1 - DB/            # Visual architecture documentation
-│
-├── .gitignore                   # Git exclusion rules
-└── README.md                    # This file
+└── Diagrams/                    # Architecture and ERD images
+
 ```
-
-### Phase 1: Database
-Establishes the foundation with PostgreSQL schema including:
-- **Users Table**: Tenant user accounts with authentication
-- **Contracts Table**: Billing contracts with terms and renewal dates
-- **Billing Records**: Transaction logs and audit trails
-- **Indexes**: Query optimization for production performance
-
-### Phase 2: Core Logic (OOP)
-Python application implementing:
-- **Strategy Pattern**: Different billing calculation algorithms
-- **Repository Pattern**: Data access abstraction layer
-- **Schemas**: Pydantic models for data validation
-- **Main Module**: Orchestrates billing operations for tenants
 
 ---
 
-## How to Run
+## Prerequisites
+
 
 ### 1. Clone the Repository
 ```bash
@@ -102,153 +60,81 @@ git clone [https://github.com/yourusername/MoveInSync.git](https://github.com/su
 cd MoveInSync
 ```
 
-### 2. Set Up PostgreSQL Database
+- Python 3.9+
+- PostgreSQL 12+
 
-#### Create Database
-```sql
-CREATE DATABASE moveinsync_db;
-```
 
-#### Run Schema Setup
-```bash
-psql -U postgres -d moveinsync_db -f "Phase 1 - Database/MoveInSync_DB/01_schema_design/01_tables.sql"
-psql -U postgres -d moveinsync_db -f "Phase 1 - Database/MoveInSync_DB/01_schema_design/02_indexes.sql"
-```
+Recommended Python libraries (provided in `requirements.txt`):
 
-#### Load Seed Data
-```bash
-psql -U postgres -d moveinsync_db -f "Phase 1 - Database/MoveInSync_DB/02_seed_data/01_seed_users.sql"
-psql -U postgres -d moveinsync_db -f "Phase 1 - Database/MoveInSync_DB/02_seed_data/02_seed_contracts.sql"
-psql -U postgres -d moveinsync_db -f "Phase 1 - Database/MoveInSync_DB/02_seed_data/03_renewal.sql"
-```
+- `psycopg2-binary` — PostgreSQL driver
+- `python-dotenv` — load `.env` into environment
 
-### 3. Set Up Python Environment
+---
 
-#### Create Virtual Environment
-```bash
-# Windows
-python -m venv venv
-venv\Scripts\activate
+## How to Run (safe, accurate steps)
 
-# macOS/Linux
-python3 -m venv venv
-source venv/bin/activate
-```
+### 1) Prepare the database
 
-#### Install Dependencies
-```bash
-pip install -r requirements.txt
-```
+1. Create a PostgreSQL database named `moveinsync_db` (via pgAdmin, DBeaver, or psql).
 
-### 4. Configure Environment Variables
-Create a `.env` file in the root directory:
+2. Open the SQL files in a GUI client (DBeaver / pgAdmin) and execute them in order to avoid shell quoting issues on Windows:
+
+   - `Phase 1 - Database/MoveInSync_DB/01_schema_design/01_tables.sql`
+   - `Phase 1 - Database/MoveInSync_DB/01_schema_design/02_indexes.sql`
+   - `Phase 1 - Database/MoveInSync_DB/02_seed_data/01_seed_users.sql`
+   - `Phase 1 - Database/MoveInSync_DB/02_seed_data/02_seed_contracts.sql`
+   - `Phase 1 - Database/MoveInSync_DB/02_seed_data/03_renewal.sql`
+
+> Tip: Using a GUI ensures files with spaces in paths are handled safely on Windows.
+
+### 2) Configure environment variables
+
+Create a `.env` file in the project root with these entries (this project already supports `python-dotenv` in `repository.py`):
+
 ```
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=moveinsync_db
 DB_USER=postgres
-DB_PASSWORD=your_password
+DB_PASSWORD=your_password_here
 ```
 
-### 5. Run the Application
-```bash
-python "Phase 2 - core logic OOP/main.py" <tenant_id>
+The repository reads the database config from environment variables. Do not commit the `.env` file.
+
+### 3) Create a virtual environment and install dependencies
+
+Windows (PowerShell):
+
+```powershell
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
-Example:
-```bash
+### 4) Run the billing engine
+
+From the repository root:
+
+```powershell
 python "Phase 2 - core logic OOP/main.py" d0000000-0000-0000-0000-000000000001
 ```
 
----
-
-## API / Usage Examples
-
-### Running Billing Calculations
-```python
-from Phase_2___core_logic_OOP.main import BillingEngine
-
-engine = BillingEngine(tenant_id="d0000000-0000-0000-0000-000000000001")
-results = engine.calculate_billing()
-```
-
-### Querying Contracts
-```python
-from Phase_2___core_logic_OOP.repository import ContractRepository
-
-repo = ContractRepository()
-contracts = repo.get_contracts_by_tenant(tenant_id="d0000000-0000-0000-0000-000000000001")
-```
+Replace the example trip/tenant id with a real ID from your seeded data.
 
 ---
 
-## Development
+## Notes / Known Limitations
 
-### Running Tests
-```bash
-pytest tests/ -v
-```
-
-### Code Style
-This project follows **PEP 8** guidelines. Ensure compliance with:
-```bash
-black "Phase 2 - core logic OOP/"
-flake8 "Phase 2 - core logic OOP/"
-```
+- This repository contains the database schema and the Python OOP billing engine. There are no automated tests or CI configured in this project yet.
+- Linting/formatting and test tooling are not configured; do not rely on `pytest`, `black`, or `flake8` unless you add them.
+- The recommended `requirements.txt` is included but keep it up-to-date by running `pip freeze > requirements.txt` when you add more packages.
 
 ---
 
-## Database Connection Details
+## Contact
 
-| Property | Value |
-|----------|-------|
-| **Host** | localhost |
-| **Port** | 5432 |
-| **Database** | moveinsync_db |
-| **Default User** | postgres |
-| **Auth Type** | PostgreSQL Native |
+For questions or feedback, open an issue on the GitHub repository or contact the project owner.
 
 ---
 
-## Troubleshooting
-
-### PostgreSQL Connection Error
-- Verify PostgreSQL service is running
-- Check credentials in `.env` file
-- Ensure database exists: `psql -l`
-
-### Python Module Import Errors
-- Activate virtual environment: `venv\Scripts\activate` (Windows) or `source venv/bin/activate` (macOS/Linux)
-- Reinstall dependencies: `pip install -r requirements.txt`
-
-### Port Conflicts
-If port 5432 is in use:
-- Check: `netstat -ano | findstr :5432` (Windows)
-- Change `DB_PORT` in `.env`
-
----
-
-## Contributing
-
-1. Create a feature branch: `git checkout -b feature/your-feature`
-2. Commit changes: `git commit -am 'Add new feature'`
-3. Push to branch: `git push origin feature/your-feature`
-4. Submit a Pull Request
-
----
-
-## License
-
-This project is licensed under the **MIT License** — see LICENSE file for details.
-
----
-
-## Contact & Support
-
-For issues, questions, or collaboration:
-- 📧 Email: your-email@example.com
-- 💬 GitHub Issues: [Create an Issue](https://github.com/yourusername/MoveInSync/issues)
-
----
-
-**Last Updated**: November 2025
+**Last updated:** November 2025
