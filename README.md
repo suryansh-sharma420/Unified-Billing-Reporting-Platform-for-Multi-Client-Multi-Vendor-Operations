@@ -98,7 +98,7 @@ Python application implementing:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/MoveInSync.git
+git clone [https://github.com/yourusername/MoveInSync.git](https://github.com/suryansh-sharma420/Unified-Billing-Reporting-Platform-for-Multi-Client-Multi-Vendor-Operations.git)
 cd MoveInSync
 ```
 
