@@ -55,6 +55,10 @@ htmlcov/
 .env
 .env.local
 .env.*.local
+.env.example
+
+# Private notes
+PHASE_3_SUMMARY.md
 
 # Logs
 *.log
