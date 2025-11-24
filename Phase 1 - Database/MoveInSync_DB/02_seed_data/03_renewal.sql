@@ -22,6 +22,7 @@ VALUES (
         "base_monthly_fee": 60000.00,
         "free_km_included": 1000,
         "per_km_rate_after_limit": 25.00,
-        "night_shift_surcharge": 300.00
+        "night_shift_surcharge": 300.00,
+        "incentive_rules": { "carpool_bonus": 50.00 }
     }'::jsonb
 );

@@ -19,7 +19,8 @@ class TripData:
     distance_km: float
     duration_minutes: float
     start_hour: int  # <--- THIS IS THE CRITICAL FIX
-    vehicle_type: str = "Standard" 
+    vehicle_type: str = "Standard"
+    is_carpool: bool = False
 
 @dataclass
 class ContractRuleConfig:
@@ -43,6 +44,9 @@ class ContractRuleConfig:
     included_km: Optional[float] = 0.0
     overage_per_km: Optional[float] = 0.0
 
+    # Incentive rules (nested dictionary) e.g. {"carpool_bonus": 50.0}
+    incentive_rules: Optional[Dict[str, float]] = None
+
 @dataclass
 class CalculationResult:
     trip_id: str
@@ -51,3 +55,7 @@ class CalculationResult:
     tax_amount: float
     total_cost: float
     breakdown: Dict[str, Any]
+    # Amount paid to employee as incentive (client pays this)
+    employee_incentive: float = 0.0
+    # Optional detailed incentive breakdown
+    incentive_breakdown: Optional[Dict[str, float]] = None

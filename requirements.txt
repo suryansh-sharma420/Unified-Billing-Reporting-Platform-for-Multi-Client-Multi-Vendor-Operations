@@ -1,2 +1,8 @@
 psycopg2-binary
 python-dotenv
+<<<<<<< HEAD
+=======
+fastapi
+uvicorn[standard]
+pydantic
+>>>>>>> 9b3e3e2b13ca2c7d9d5752084bc616584c454218

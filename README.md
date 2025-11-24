@@ -1,132 +1,105 @@
-# Unified Billing & Reporting Engine
+# MoveInSync - Unified Billing & Reporting Platform
 
-## Project Overview
-
-**MoveInSync** is a backend billing and reporting platform built for multi-tenant, vendor-client operations. The project is database-first and uses **PostgreSQL** for persistence and **Python (OOP)** for billing logic.
-
-### Key Features
-- Flexible billing logic implemented with the Strategy pattern
-- Multi-tenant-aware design (tenant and vendor scoping)
-- Audit-oriented data model (billing records and JSON logs)
-- Database-first schema with JSONB for extensible contract rules
-
----
-
-## Architecture
-
-### System Architecture
-![Architecture Diagram](./Diagrams/Phase%201%20-%20DB/MoveInSync_DB_HLD(architecture).png)
-
-### Entity Relationship Diagram (ERD)
-![ERD Diagram](./Diagrams/Phase%201%20-%20DB/MoveInSync_DB_DetailedERD(architecture).png)
-
----
+A comprehensive multi-client, multi-vendor billing and reporting platform with JWT-based RBAC security and enterprise-grade architecture.
 
 ## Project Structure
 
-```
-MoveInSync_Project/
-├── Phase 1 - Database/          # Database schema and seed data
-│   ├── MoveInSync_DB/
-│   │   ├── 01_schema_design/
-│   │   │   ├── 01_tables.sql
-│   │   │   └── 02_indexes.sql
-│   │   └── 02_seed_data/
-│   │       ├── 01_seed_users.sql
-│   │       ├── 02_seed_contracts.sql
-│   │       └── 03_renewal.sql
-│
-├── Phase 2 - core logic OOP/    # Python application logic
-│   ├── main.py                  # Application entry point
-│   ├── diagnosis.py             # Diagnostic utilities
-│   └── billing/                 # Billing engine module
-│       ├── __init__.py
-│       ├── repository.py        # Data access (uses python-dotenv for config)
-│       ├── schemas.py           # Dataclasses used by the billing engine
-│       └── strategies.py        # Strategy pattern implementations
-│
-└── Diagrams/                    # Architecture and ERD images
-
-```
-
----
+| Phase | Directory | Purpose |
+|-------|-----------|---------|
+| **1** | Phase 1 - Database | PostgreSQL schema, indexes, and seed data |
+| **2** | Phase 2 - core logic OOP | Core billing logic with Strategy pattern |
+| **3** | Phase 3 - APIs | FastAPI REST service with security |
+| **4** | Phase 4 - UI | Streamlit frontend application |
+| **5** | Phase 5 - optimizations | Performance and optimization scripts |
+| **6** | Phase 6 - RBAC | JWT-based security and role management |
 
 ## Prerequisites
 
 - Python 3.9+
 - PostgreSQL 12+
+- pip and virtual environment
 
-Recommended Python libraries (provided in `requirements.txt`):
+## Quick Start
 
-- `psycopg2-binary` — PostgreSQL driver
-- `python-dotenv` — load `.env` into environment
-
----
-
-## How to Run (safe, accurate steps)
-
-### 1) Prepare the database
-
-1. Create a PostgreSQL database named `moveinsync_db` (via pgAdmin, DBeaver, or psql).
-
-2. Open the SQL files in a GUI client (DBeaver / pgAdmin) and execute them in order to avoid shell quoting issues on Windows:
-
-   - `Phase 1 - Database/MoveInSync_DB/01_schema_design/01_tables.sql`
-   - `Phase 1 - Database/MoveInSync_DB/01_schema_design/02_indexes.sql`
-   - `Phase 1 - Database/MoveInSync_DB/02_seed_data/01_seed_users.sql`
-   - `Phase 1 - Database/MoveInSync_DB/02_seed_data/02_seed_contracts.sql`
-   - `Phase 1 - Database/MoveInSync_DB/02_seed_data/03_renewal.sql`
-
-> Tip: Using a GUI ensures files with spaces in paths are handled safely on Windows.
-
-### 2) Configure environment variables
-
-Create a `.env` file in the project root with these entries (this project already supports `python-dotenv` in `repository.py`):
-
-```
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=moveinsync_db
-DB_USER=postgres
-DB_PASSWORD=your_password_here
+### 1. Setup Database
+```powershell
+# Navigate to database folder
+cd "Phase 1 - Database\MoveInSync_DB"
+# Run SQL scripts in order: tables, indexes, seed data
 ```
 
-The repository reads the database config from environment variables. Do not commit the `.env` file.
+### 2. Configure Environment
+```powershell
+# Create .env from example (in root directory)
+copy .env.example .env
+# Edit .env with your PostgreSQL credentials
+```
 
-### 3) Create a virtual environment and install dependencies
-
-Windows (PowerShell):
-
+### 3. Install Dependencies
 ```powershell
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4) Run the billing engine
-
-From the repository root:
-
+### 4. Start Backend API
 ```powershell
-python "Phase 2 - core logic OOP/main.py" d0000000-0000-0000-0000-000000000001
+cd "Phase 3 - APIs"
+python -m uvicorn main_api:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Replace the example trip/tenant id with a real ID from your seeded data.
+### 5. Start Frontend (in new terminal)
+```powershell
+cd "Phase 4 - UI"
+streamlit run app.py
+```
 
----
+## Authentication
 
-## Notes / Known Limitations
+- **Default Login:** admin@client.com / Password@123
+- **JWT Token Expiry:** 60 minutes
+- **Roles:** SUPER_ADMIN, CLIENT_ADMIN, VENDOR_ADMIN, VIEWER
+- See Phase 6 - RBAC for security documentation
 
-- This repository contains the database schema and the Python OOP billing engine. There are no automated tests or CI configured in this project yet.
-- Linting/formatting and test tooling are not configured; do not rely on `pytest`, `black`, or `flake8` unless you add them.
-- The recommended `requirements.txt` is included but keep it up-to-date by running `pip freeze > requirements.txt` when you add more packages.
+What to include when pushing to GitHub
 
----
+Include the following (public code and assets):
+- `Phase 1 - Database/` (schema and seed SQL files)
+- `Phase 2 - core logic OOP/` (billing logic: `billing/`, `main.py`, `diagnosis.py`)
+- `Phase 3 - APIs/` (API code: `main_api.py`, `service.py`, `dependencies.py`, `api_models.py`, `exceptions.py`, `README.md`, `QUICKSTART.md`)
+- `requirements.txt`, `.env.example`, `Diagrams/` and project-level documentation (concise READMEs)
 
-## Contact
+Keep these files private (do NOT push to GitHub):
+- `.env` or any file containing secrets (database passwords, API keys)
+- `PHASE_3_SUMMARY.md` or any private notes / chat transcripts
+- Local environment directories and caches: `venv/`, `__pycache__/`, `*.pyc`, `.vscode/`
 
-For questions or feedback, open an issue on the GitHub repository or contact the project owner.
+Suggested `.gitignore` entries (add to project root):
+```
+# Environment
+venv/
+.env
+.env.*
 
----
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
+
+# Private notes
+PHASE_3_SUMMARY.md
+```
+
+Support and next steps
+
+- Run the Quickstart in `Phase 3 - APIs/QUICKSTART.md` to test endpoints locally.
+- Verify client isolation by making requests with different client IDs.
+- If you plan to publish the repo, confirm `PHASE_3_SUMMARY.md` and any chat logs are removed or excluded via `.gitignore`.
+
+If you want, I can prepare a ready-to-commit `.gitignore` and a minimal release checklist before you push to GitHub.
 
 **Last updated:** November 2025
+### 2) Configure environment variables
